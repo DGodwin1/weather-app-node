@@ -41,7 +41,7 @@ app.post("/", (req, res) => {
 
     if (data.main == undefined) {
       res.render("index", { error: "Error, please try again" });
-      return; //returning here means we can help get out of if/else block nastiness. Means we just exit from app.post() rather than doing any more work.
+      return;
     }
 
     res.render("index", {
