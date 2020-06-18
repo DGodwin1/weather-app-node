@@ -32,20 +32,18 @@ app.listen(8080, () => {
 
 app.post("/", (req, res) => {
   request(GenerateURL(req.body.city), (err, response, body) => {
+    const data = JSON.parse(body);
+
     if (err) {
       res.render("index", { error: "Error,please try again" });
-    } else {
-      const w = JSON.parse(body);
-      console.log("it's all good. No errors");
-      if (weather.main == undefined) {
-        res.render("index", {
-          weather: null,
-          error: "Error, please try again",
-        });
-      } else {
-        const weather = `It's ${w.main.temp} degrees in ${w.name}!`;
-        res.render("index", { weather: weather, error: null }); //.render() when you want to pass through data.
-      }
+      return;
     }
+
+    if (data.main == undefined) {
+      res.render("index", { error: "Error, please try again" });
+      return; //returning here means we can help get out of if/else block nastiness. Means we just exit from app.post() rather than doing any more work.
+    }
+    const weather = `It's ${data.main.temp} degrees in ${data.name}!`;
+    res.render("index", { weather: weather, error: null });
   });
 });
