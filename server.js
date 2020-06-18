@@ -43,7 +43,10 @@ app.post("/", (req, res) => {
       res.render("index", { error: "Error, please try again" });
       return; //returning here means we can help get out of if/else block nastiness. Means we just exit from app.post() rather than doing any more work.
     }
-    const weather = `It's ${data.main.temp} degrees in ${data.name}!`;
-    res.render("index", { weather: weather, error: null });
+
+    res.render("index", {
+      weather: `It's ${data.main.temp} degrees in ${data.name}!`,
+      error: null,
+    });
   });
 });
