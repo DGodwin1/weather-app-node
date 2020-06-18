@@ -4,7 +4,14 @@ const app = express();
 const bodyParser = require("body-parser");
 const request = require("request");
 
-//check that the API key actually exists before doing anything else.
+if (!process.env.API_KEY) {
+  // We should exit out if you don't have an API key in the .env file.
+  console.log("you don't have an api key so not going to do it lol");
+  process.exit(1); // Set exit() to something other than 0 so it doesn't look like the exit was 'okay'.
+}
+
+GenerateURL = (city) =>
+  `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.API_KEY}&units=metric`;
 
 app.use(express.static("public"));
 
@@ -13,20 +20,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 
 app.get("/", (req, res) => {
-  console.log(process.env.DAVID_ENV);
   res.render("index");
 });
 
-//try and make a app.get("/london") <-- try and return London weather. URL parsing.
-
 app.listen(8080, () => {
-  console.log("Listening on port 8080 baby");
+  console.log("Listening on port 8080");
 });
 
 app.post("/", (req, res) => {
-  let city = req.body.city;
-  let url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.API_KEY}&units=metric`; //use the API_KEY with environment variables rather than hardcoding it.
-  request(url, (err, response, body) => {
+  request(GenerateURL(req.body.city), (err, response, body) => {
     // if(err){
     //     res.render('index',{ weather: null, error:'Error,please try again'});
     // }else{
